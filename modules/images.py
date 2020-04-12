@@ -34,6 +34,8 @@ class ImageHolder:
     self.dimensions = None
     self.cacheAllow = False
     self.cacheUsed = False
+    self.author = None
+    self.description = None
 
   def setId(self, id):
     self.id = id
@@ -71,3 +73,11 @@ class ImageHolder:
     if self.id is None:
       return None
     return hashlib.sha1(self.id).hexdigest()
+
+  def setAuthor(self, author):
+    self.author = author
+    return self
+
+  def setDescription(self, description):
+    self.description = description
+    return self

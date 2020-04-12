@@ -27,7 +27,7 @@ class GooglePhotos(BaseService):
     BaseService.__init__(self, configDir, id, name, needConfig=False, needOAuth=True)
 
   def getOAuthScope(self):
-    return ['https://www.googleapis.com/auth/photoslibrary.readonly']
+    return ['https://www.googleapis.com/auth/photoslibrary.sharing']
 
   def helpOAuthConfig(self):
     return 'Please upload client.json from the Google API Console'
@@ -312,6 +312,8 @@ class GooglePhotos(BaseService):
       item.setSource(entry['productUrl']).setMimetype(entry['mimeType'])
       item.setDimensions(entry['mediaMetadata']['width'], entry['mediaMetadata']['height'])
       item.allowCache(True)
+      item.setAuthor(entry['contributorInfo']['displayName'])
+      item.setDescription(entry['description'])
       parsedImages.append(item)
     return parsedImages
 
