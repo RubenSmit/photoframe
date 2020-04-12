@@ -218,7 +218,7 @@ class display:
       self._to_display(args)
       self.lastMessage = message
 
-  def image(self, filename):
+  def image(self, filename, description):
     if not self.enabled:
       logging.debug('Don\'t bother, display is off')
       return
@@ -233,6 +233,13 @@ class display:
       'black',
       '-gravity',
       'center',
+      '-fill', # custom start
+      'white',
+      '-weight',
+      '700',
+      '-pointsize',
+      '32',
+      'caption:%s' % description, # custom end
       '-extent',
       '%dx%d+%d+%d' % (self.width + self.xoffset, self.height + self.yoffset, self.xoffset, self.yoffset),
       '-depth',
