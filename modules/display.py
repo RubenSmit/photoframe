@@ -218,7 +218,7 @@ class display:
       self._to_display(args)
       self.lastMessage = message
 
-  def image(self, filename):
+  def image(self, filename, description):
     if not self.enabled:
       logging.debug('Don\'t bother, display is off')
       return
@@ -245,7 +245,7 @@ class display:
       '32',
       '-annotate',
       '0',
-      '\' Hello World! \'',
+      '%s' % description,
       '%s:-' % self.format
     ]
     self._to_display(args)

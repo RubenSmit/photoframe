@@ -276,7 +276,7 @@ class slideshow:
         logging.warning("Trying to show image '%s', but file does not exist!"%filename)
         self.delayer.set()
         return
-      self.display.image(filename)
+      self.display.image(filename, "Hello World! 2")
       self.imageCurrent = filename
       self.imageMime = mimetype
       self.imageOnScreen = True
