@@ -27,7 +27,7 @@ class GooglePhotos(BaseService):
     BaseService.__init__(self, configDir, id, name, needConfig=False, needOAuth=True)
 
   def getOAuthScope(self):
-    return ['https://www.googleapis.com/auth/photoslibrary.sharing']
+    return ['https://www.googleapis.com/auth/photoslibrary.sharing https://www.googleapis.com/auth/photoslibrary.readonly']
 
   def helpOAuthConfig(self):
     return 'Please upload client.json from the Google API Console'
