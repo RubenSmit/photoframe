@@ -232,11 +232,20 @@ class display:
       '-background',
       'black',
       '-gravity',
-      'center',
+      'south',
       '-extent',
       '%dx%d+%d+%d' % (self.width + self.xoffset, self.height + self.yoffset, self.xoffset, self.yoffset),
       '-depth',
       '8',
+      '-undercolor',
+      '\'#00000080\'',
+      '-fill',
+      'white',
+      '-pointsize',
+      '32',
+      '-annotate',
+      '0',
+      '\' Hello World! \'',
       '%s:-' % self.format
     ]
     self._to_display(args)
