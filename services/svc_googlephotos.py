@@ -306,14 +306,23 @@ class GooglePhotos(BaseService):
     if data is None:
       return None
     parsedImages = []
+    descriptions = {}
     for entry in data:
       item = BaseService.createImageHolder(self)
       item.setId(entry['id'])
       item.setSource(entry['productUrl']).setMimetype(entry['mimeType'])
       item.setDimensions(entry['mediaMetadata']['width'], entry['mediaMetadata']['height'])
+      descriptions[entry['id']] = entry['description']
       item.allowCache(True)
       parsedImages.append(item)
+    saveDescriptions(descriptions)
     return parsedImages
+
+  def saveDescriptions(self, descriptions)
+    json = json.dumps(descriptions)
+    logging.debug('Storing descriptions: %s' % json)
+    with open('/root/cache/descriptions.json', 'w') as output:
+      output.write(json)
 
   def getContentUrl(self, image, hints):
     # Tricky, we need to obtain the real URL before doing anything
