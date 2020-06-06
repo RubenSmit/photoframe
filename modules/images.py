@@ -14,6 +14,7 @@
 # along with photoframe.  If not, see <http://www.gnu.org/licenses/>.
 #
 import hashlib
+import textwrap
 
 class ImageHolder:
   def __init__(self):
@@ -62,7 +63,7 @@ class ImageHolder:
     return self
 
   def setDescription(self, description):
-    self.description = description
+    self.description = TextWrapper().wrap(description)
     return self
 
   def setDimensions(self, width, height):
