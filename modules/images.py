@@ -63,7 +63,7 @@ class ImageHolder:
     return self
 
   def setDescription(self, description):
-    self.description = TextWrapper().wrap(description)
+    self.description = textwrap.TextWrapper().wrap(description)
     return self
 
   def setDimensions(self, width, height):
