@@ -306,16 +306,14 @@ class GooglePhotos(BaseService):
     if data is None:
       return None
     parsedImages = []
-    descriptions = {}
+    logging.
     for entry in data:
       item = BaseService.createImageHolder(self)
       item.setId(entry['id'])
       item.setSource(entry['productUrl']).setMimetype(entry['mimeType'])
       item.setDimensions(entry['mediaMetadata']['width'], entry['mediaMetadata']['height'])
-      descriptions[entry['id']] = entry['description']
       item.allowCache(True)
       parsedImages.append(item)
-    saveDescriptions(descriptions)
     return parsedImages
 
   def saveDescriptions(self, descriptions)
