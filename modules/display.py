@@ -224,30 +224,48 @@ class display:
       return
 
     logging.debug('Showing image to user')
-    args = [
-      'convert',
-      filename + '[0]',
-      '-resize',
-      '%dx%d' % (self.width, self.height),
-      '-background',
-      'black',
-      '-gravity',
-      'south',
-      '-extent',
-      '%dx%d+%d+%d' % (self.width + self.xoffset, self.height + self.yoffset, self.xoffset, self.yoffset),
-      '-depth',
-      '8',
-      '-undercolor',
-      '\'#00000080\'',
-      '-fill',
-      'white',
-      '-pointsize',
-      '32',
-      '-annotate',
-      '0',
-      '%s' % description,
-      '%s:-' % self.format
-    ]
+    args = []
+    if not description == None:
+      args = [
+        'convert',
+        filename + '[0]',
+        '-resize',
+        '%dx%d' % (self.width, self.height),
+        '-background',
+        'black',
+        '-gravity',
+        'south',
+        '-extent',
+        '%dx%d+%d+%d' % (self.width + self.xoffset, self.height + self.yoffset, self.xoffset, self.yoffset),
+        '-depth',
+        '8',
+        '-undercolor',
+        '\'#00000080\'',
+        '-fill',
+        'white',
+        '-pointsize',
+        '32',
+        '-annotate',
+        '0',
+        '%s' % description,
+        '%s:-' % self.format
+      ]
+    else:
+      args = [
+        'convert',
+        filename + '[0]',
+        '-resize',
+        '%dx%d' % (self.width, self.height),
+        '-background',
+        'black',
+        '-gravity',
+        'center',
+        '-extent',
+        '%dx%d+%d+%d' % (self.width + self.xoffset, self.height + self.yoffset, self.xoffset, self.yoffset),
+        '-depth',
+        '8',
+        '%s:-' % self.format
+      ]
     self._to_display(args)
 
   def enable(self, enable, force=False):

@@ -313,8 +313,6 @@ class GooglePhotos(BaseService):
       item.setDimensions(entry['mediaMetadata']['width'], entry['mediaMetadata']['height'])
       if 'description' in entry.keys():
         item.setDescription(entry['description'])
-      else:
-        item.setDescription("No description available")
       item.allowCache(True)
       parsedImages.append(item)
     return parsedImages
