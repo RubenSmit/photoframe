@@ -17,6 +17,7 @@ import threading
 import logging
 import os
 import time
+import json
 
 from modules.helper import helper
 from modules.network import RequestNoNetwork
@@ -329,7 +330,7 @@ class slideshow:
       if self.running:
         # Skip this section if we were killed while waiting around
         self.handleEvents()
-        logging.info("Showing new image with filenameProcessed %s and result (%s)" %(filenameProcessed, json.dumps(result)))
+        logging.info("Showing new image with filenameProcessed %s and result (%s)"%(filenameProcessed, json.dumps(result)))
         self.showPreloadedImage(filenameProcessed, result.mimetype, result.id)
 
     self.thread = None
