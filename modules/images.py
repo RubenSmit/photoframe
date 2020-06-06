@@ -25,12 +25,14 @@ class ImageHolder:
     # "dimensions":     a key/value map containing "width" and "height" of the image
     #             can be None, but the service won't be able to determine a recommendedImageSize for 'addUrlParams'
     # "filename": the original filename of the image or None if unknown (only used for debugging purposes)
+    # "description": the original description of the image or None if unknown
     self.id = None
     self.mimetype = None
     self.error = None
     self.source = None
     self.url = None
     self.filename = None
+    self.description = None
     self.dimensions = None
     self.cacheAllow = False
     self.cacheUsed = False
@@ -57,6 +59,10 @@ class ImageHolder:
 
   def setFilename(self, filename):
     self.filename = filename
+    return self
+
+  def setDescription(self, description):
+    self.description = description
     return self
 
   def setDimensions(self, width, height):

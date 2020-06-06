@@ -330,7 +330,7 @@ class slideshow:
       if self.running:
         # Skip this section if we were killed while waiting around
         self.handleEvents()
-        logging.info("Showing new image with filenameProcessed %s and result (%s)"%(filenameProcessed, json.dumps(result)))
+        logging.info("Showing new image with filenameProcessed %s and description (%s)"%(filenameProcessed, result.description))
         self.showPreloadedImage(filenameProcessed, result.mimetype, result.id)
 
     self.thread = None
