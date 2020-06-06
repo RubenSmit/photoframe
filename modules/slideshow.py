@@ -17,7 +17,6 @@ import threading
 import logging
 import os
 import time
-import json
 
 from modules.helper import helper
 from modules.network import RequestNoNetwork
@@ -271,13 +270,13 @@ class slideshow:
       self.delayer.wait(1) # Always wait ONE second to avoid busy waiting)
     self.delayer.clear()
 
-  def showPreloadedImage(self, filename, mimetype, imageId):
+  def showPreloadedImage(self, filename, mimetype, imageId, imageDescription):
     if not self.skipPreloadedImage:
       if not os.path.isfile(filename):
         logging.warning("Trying to show image '%s', but file does not exist!"%filename)
         self.delayer.set()
         return
-      self.display.image(filename, "Hello World! 2")
+      self.display.image(filename, imageDescription)
       self.imageCurrent = filename
       self.imageMime = mimetype
       self.imageOnScreen = True
@@ -331,7 +330,7 @@ class slideshow:
         # Skip this section if we were killed while waiting around
         self.handleEvents()
         logging.info("Showing new image with filenameProcessed %s and description (%s)"%(filenameProcessed, result.description))
-        self.showPreloadedImage(filenameProcessed, result.mimetype, result.id)
+        self.showPreloadedImage(filenameProcessed, result.mimetype, result.id, result.description)
 
     self.thread = None
     logging.info('slideshow has ended')
