@@ -295,6 +295,8 @@ class slideshow:
     if not slideshow.SHOWN_IP:
       self.startupScreen()
 
+    last_update = time.time()
+
     logging.info('Starting presentation')
     i = 0
     while self.running:
@@ -303,6 +305,10 @@ class slideshow:
 
       if (i % 10) == 0:
         self.cacheMgr.garbageCollect()
+
+      if self.settings.getUser('refresh-content') is not 0 and time.time() > last_update + self.settings.getUser('refresh-content') * 3600:
+        self.cleanConfig = True
+        self.doClearCache = True
 
       displaySize = {'width': self.settings.getUser('width'), 'height': self.settings.getUser('height'), 'force_orientation': self.settings.getUser('force_orientation')}
       randomize = (not self.ignoreRandomize) and bool(self.settings.getUser('randomize_images'))
