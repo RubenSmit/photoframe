@@ -106,3 +106,5 @@ ENV/
 
 # from developer leogaube
 /useful_commands
+
+.idea
