@@ -22,7 +22,7 @@ from urlparse import urljoin
 from modules.helper import helper
 
 class GooglePhotos(BaseService):
-  SERVICE_NAME = 'Google Photos'
+  SERVICE_NAME = 'Google Photos - public album'
   SERVICE_ID   = 5
 
   def __init__(self, configDir, id, name):
