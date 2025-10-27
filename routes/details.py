@@ -69,7 +69,7 @@ class RouteDetails(BaseRoute):
     elif about == 'hardware':
       output = ''
       try:
-        output = subprocess.check_output(['/opt/vc/bin/vcgencmd', 'get_throttled'], stderr=self.void)
+        output = subprocess.check_output(['vcgencmd', 'get_throttled'], stderr=self.void)
       except:
         logging.exception('Unable to execute /opt/vc/bin/vcgencmd')
       if not output.startswith('throttled='):

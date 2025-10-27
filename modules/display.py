@@ -155,6 +155,7 @@ class display:
     return (result, 'image/jpeg')
 
   def _to_display(self, arguments):
+    logging.info('Sending to display')
     device = self.getDevice()
     if self.emulate:
       device = '/tmp/fb.bin'
@@ -164,6 +165,7 @@ class display:
       with open(device, 'wb') as f:
         debug.subprocess_call(arguments, stdout=f, stderr=self.void)
     elif self.depth == 16: # Typically RGB565
+      logging.info('Bitdepth 16, using tempfile for the output to the framebuffer')
       # For some odd reason, cannot pipe the output directly to the framebuffer, use temp file
       with open(device, 'wb') as fb:
         src = subprocess.Popen(arguments, stdout=subprocess.PIPE, stderr=self.void)

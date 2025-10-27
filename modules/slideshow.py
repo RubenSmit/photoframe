@@ -313,6 +313,7 @@ class slideshow:
         if self.handleErrors(result):
           continue
       except RequestNoNetwork:
+        logging.info('No network')
         offline = self.settings.getUser('offline-behavior')
         if offline == 'wait':
           self.waitForNetwork()
@@ -322,6 +323,7 @@ class slideshow:
 
       filenameProcessed = self.process(result)
       if filenameProcessed is None:
+        logging.info('Showing image')
         continue
 
       time_process = time.time() - time_process

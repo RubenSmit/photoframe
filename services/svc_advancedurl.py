@@ -16,8 +16,8 @@
 from base import BaseService
 import logging
 import re
-from urllib.request import urlopen
-from urllib.parse import urljoin
+from urllib2 import urlopen
+from urlparse import urljoin
 
 from modules.helper import helper
 
@@ -89,9 +89,9 @@ class AdvancedUrl(BaseService):
     if url in self.brokenUrls:
       return []
 
-    image_urls = getImageUrls(self, url)
+    image_urls = self.getImageUrls(url)
     images = []
-    for img_url in img_urls:
+    for img_url in image_urls:
         image = BaseService.createImageHolder(self) \
             .setId(self.hashString(img_url)) \
             .setUrl(img_url) \
@@ -104,10 +104,11 @@ class AdvancedUrl(BaseService):
 #     image = BaseService.createImageHolder(self).setId(self.hashString(url)).setUrl(url).setSource(url).allowCache(True)
 #     return [image]
 
-  def getImageUrls(self, url)
+  def getImageUrls(self, url):
     # Fetch the page
-    with urlopen(url) as response:
-        html = response.read().decode('utf-8', errors='ignore')
+    response = urlopen(url)
+    html = response.read().decode('utf-8', errors='ignore')
+    response.close()
 
     # Find image sources with regex
     img_srcs = re.findall(r'<img[^>]+src=["\']?([^"\'>]+)', html, re.IGNORECASE)
