@@ -117,8 +117,8 @@ class GooglePhotos(BaseService):
         # Ignore URLs ending with 'p-no', those are profile images
         if full_url.endswith('p-no'):
             continue
-        # Replace ending starting with '='
-        full_url = re.sub(r'=[^=&]*$', '=w1024-h600-no', full_url)
+        # Replace the last =something with =w1024-h700-no
+        full_url = re.sub(r'=[^=]*$', '=w1024-h700-no', full_url)
         img_urls.append(full_url)
 
     return img_urls
