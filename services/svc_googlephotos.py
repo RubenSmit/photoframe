@@ -117,10 +117,12 @@ class GooglePhotos(BaseService):
     img_urls = []
     for src in img_srcs:
         full_url = urljoin(url, src)
-        if 'w108-h72-no' in full_url:
-            # Replace size string
-            full_url = full_url.replace('w108-h72-no', 'w1024-h700-no')
-            img_urls.append(full_url)
+        # Ignore URLs ending with 'p-no', those are profile images
+        if full_url.endswith('p-no'):
+            continue
+        # Replace ending starting with '='
+        full_url = re.sub(r'=[^=&]*$', '=w1024-h600-no', full_url)
+        img_urls.append(full_url)
 
     return img_urls
 
