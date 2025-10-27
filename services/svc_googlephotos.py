@@ -113,8 +113,14 @@ class GooglePhotos(BaseService):
     # Find image sources with regex
     img_srcs = re.findall(r'<img[^>]+src=["\']?([^"\'>]+)', html, re.IGNORECASE)
 
-    # Convert relative URLs to absolute
-    img_urls = [urljoin(url, src) for src in img_srcs]
+    # Convert relative URLs to absolute and filter/replace
+    img_urls = []
+    for src in img_srcs:
+        full_url = urljoin(url, src)
+        if 'w108-h72-no' in full_url:
+            # Replace size string
+            full_url = full_url.replace('w108-h72-no', 'w1024-h700-no')
+            img_urls.append(full_url)
 
     return img_urls
 
