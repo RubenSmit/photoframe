@@ -138,40 +138,24 @@ class GooglePhotos(BaseService):
     return img_urls
 
   def get_google_photos_description(self, photo_page_url):
-      response = urlopen(photo_page_url)
-      html = response.read().decode('utf-8', errors='ignore')
-      response.close()
+    try:
+        response = urlopen(photo_page_url)
+        html = response.read().decode('utf-8', errors='ignore')
+        response.close()
 
-      # Find all JSON blobs inside AF_initDataCallback
-      json_blobs = re.findall(r'AF_initDataCallback\((.*?)\);</script>', html, re.DOTALL)
-      for blob in json_blobs:
-          try:
-              # Extract JSON after "data:" and before ", sideChannel:"
-              m = re.search(r'data:(\[.*?\])[,}]', blob, re.DOTALL)
-              if not m:
-                  continue
-              data = json.loads(m.group(1))
+        # Regex to find: "396644657":["Some description text"]
+        m = re.search(r'"396644657":\s*\[\s*"([^"]+)"\s*\]', html)
+        if m:
+            desc = m.group(1).strip()
+            logging.debug('Found Google Photos description: %s' % desc)
+            return desc
 
-              # Recursively collect possible text strings
-              def find_strings(obj, results):
-                if isinstance(obj, basestring):
-                    if 2 < len(obj) < 200 and "googleusercontent" not in obj:
-                        results.append(obj)
-                elif isinstance(obj, list):
-                    for x in obj:
-                        find_strings(x, results)
-                elif isinstance(obj, dict):
-                    for x in obj.values():
-                        find_strings(x, results)
-                return results
+        logging.debug('No description found for %s' % photo_page_url)
+        return 'Geen omschrijving gevonden'
 
-              for text in find_strings(data):
-                  if "Shared using Google Photos" not in text and not text.startswith("https://"):
-                      return text.strip()
-
-          except Exception:
-              continue
-      return 'Geen omschrijving gevonden'
+    except Exception as e:
+        logging.error('Failed to get Google Photos description for %s: %s' % (photo_page_url, e))
+        return 'Er ging iets mis met het ophalen van de omschrijving, bel Ruben'
 
   def getContentUrl(self, image, hints):
     url = image.url
