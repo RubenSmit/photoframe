@@ -128,7 +128,7 @@ class GooglePhotos(BaseService):
         # Extract alt or title (prefer alt)
         alt_match = re.search(r'alt=["\']?([^"\'>]+)', tag, re.IGNORECASE)
         title_match = re.search(r'title=["\']?([^"\'>]+)', tag, re.IGNORECASE)
-        text = alt_match.group(1) if alt_match else (title_match.group(1) if title_match else None)
+        text = alt_match.group(1) if alt_match else (title_match.group(1) if title_match else '')
 
         img_urls.append((full_url, text))
 
