@@ -16,6 +16,7 @@
 from base import BaseService
 import logging
 import re
+import json
 from urllib2 import urlopen
 from urlparse import urljoin
 
@@ -127,16 +128,16 @@ class GooglePhotos(BaseService):
 
         # Check for wrapping <a href="">
         text = ''
-        a_match = re.search(r'<a[^>]+href=["\']?([^"\'>]+)[^>]*>' + re.escape(img_tag), html, re.IGNORECASE)
+        a_match = re.search(r'<a[^>]+href=\.["\']?([^"\'>]+)[^>]*>' + re.escape(tag), html, re.IGNORECASE)
         if a_match:
-            logging.info(a_match)
-            text = get_google_photos_description(a_match):
+            logging.info(urljoin('https://photos.google.com', a_match.group(1)))
+            text = self.get_google_photos_description(urljoin('https://photos.google.com', a_match.group(1)))
 
         img_urls.append((full_url, text))
 
     return img_urls
 
-  def get_google_photos_description(photo_page_url):
+  def get_google_photos_description(self, photo_page_url):
       response = urlopen(photo_page_url)
       html = response.read().decode('utf-8', errors='ignore')
       response.close()
@@ -151,17 +152,18 @@ class GooglePhotos(BaseService):
                   continue
               data = json.loads(m.group(1))
 
-              # Deep search for strings that look like captions
-              def find_strings(obj):
-                  if isinstance(obj, str):
-                      if len(obj) < 200 and len(obj) > 2 and "googleusercontent" not in obj:
-                          yield obj
-                  elif isinstance(obj, list):
-                      for x in obj:
-                          yield from find_strings(x)
-                  elif isinstance(obj, dict):
-                      for x in obj.values():
-                          yield from find_strings(x)
+              # Recursively collect possible text strings
+              def find_strings(obj, results):
+                if isinstance(obj, basestring):
+                    if 2 < len(obj) < 200 and "googleusercontent" not in obj:
+                        results.append(obj)
+                elif isinstance(obj, list):
+                    for x in obj:
+                        find_strings(x, results)
+                elif isinstance(obj, dict):
+                    for x in obj.values():
+                        find_strings(x, results)
+                return results
 
               for text in find_strings(data):
                   if "Shared using Google Photos" not in text and not text.startswith("https://"):
