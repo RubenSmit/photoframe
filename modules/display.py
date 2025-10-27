@@ -247,7 +247,7 @@ class display:
         '-fill',
         'white',
         '-pointsize',
-        '64',
+        '32',
         '-annotate',
         '0',
         '%s' % description,
