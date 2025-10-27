@@ -151,6 +151,8 @@ class GooglePhotos(BaseService):
                   continue
               data = json.loads(m.group(1))
 
+              logging.ingo(data)
+
               # Deep search for strings that look like captions
               def find_strings(obj):
                   if isinstance(obj, str):
