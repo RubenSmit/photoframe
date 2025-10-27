@@ -151,7 +151,7 @@ class GooglePhotos(BaseService):
             return desc
 
         logging.info('No description found for %s' % photo_page_url)
-        return 'Geen omschrijving gevonden'
+        return ''
 
     except Exception as e:
         logging.error('Failed to get Google Photos description for %s: %s' % (photo_page_url, e))
