@@ -125,14 +125,51 @@ class GooglePhotos(BaseService):
         # Replace the last =something with =w1024-h700-no
         full_url = re.sub(r'=[^=]*$', '=w1024-h700-no', full_url)
 
-        # Extract alt or title (prefer alt)
-        alt_match = re.search(r'alt=["\']?([^"\'>]+)', tag, re.IGNORECASE)
-        title_match = re.search(r'title=["\']?([^"\'>]+)', tag, re.IGNORECASE)
-        text = alt_match.group(1) if alt_match else (title_match.group(1) if title_match else '')
+        # Check for wrapping <a href="">
+        text = ''
+        a_match = re.search(r'<a[^>]+href=["\']?([^"\'>]+)[^>]*>' + re.escape(img_tag), html, re.IGNORECASE)
+        if a_match:
+            logging.info(a_match)
+            text = get_google_photos_description(a_match):
 
         img_urls.append((full_url, text))
 
     return img_urls
+
+  def get_google_photos_description(photo_page_url):
+      response = urlopen(photo_page_url)
+      html = response.read().decode('utf-8', errors='ignore')
+      response.close()
+
+      # Find all JSON blobs inside AF_initDataCallback
+      json_blobs = re.findall(r'AF_initDataCallback\((.*?)\);</script>', html, re.DOTALL)
+      for blob in json_blobs:
+          try:
+              # Extract JSON after "data:" and before ", sideChannel:"
+              m = re.search(r'data:(\[.*?\])[,}]', blob, re.DOTALL)
+              if not m:
+                  continue
+              data = json.loads(m.group(1))
+
+              # Deep search for strings that look like captions
+              def find_strings(obj):
+                  if isinstance(obj, str):
+                      if len(obj) < 200 and len(obj) > 2 and "googleusercontent" not in obj:
+                          yield obj
+                  elif isinstance(obj, list):
+                      for x in obj:
+                          yield from find_strings(x)
+                  elif isinstance(obj, dict):
+                      for x in obj.values():
+                          yield from find_strings(x)
+
+              for text in find_strings(data):
+                  if "Shared using Google Photos" not in text and not text.startswith("https://"):
+                      return text.strip()
+
+          except Exception:
+              continue
+      return None
 
   def getContentUrl(self, image, hints):
     url = image.url
