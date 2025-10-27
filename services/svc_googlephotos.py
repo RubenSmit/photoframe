@@ -128,7 +128,7 @@ class GooglePhotos(BaseService):
 
         # Check for wrapping <a href="">
         text = ''
-        a_match = re.search(r'<a[^>]+href=\.["\']?([^"\'>]+)[^>]*>' + re.escape(tag), html, re.IGNORECASE)
+        a_match = re.search(r'<a[^>]+href=["\']?([^"\'>]+)[^>]*>' + re.escape(tag), html, re.IGNORECASE)
         if a_match:
             logging.info(urljoin('https://photos.google.com', a_match.group(1)))
             text = self.get_google_photos_description(urljoin('https://photos.google.com', a_match.group(1)))
@@ -152,8 +152,6 @@ class GooglePhotos(BaseService):
                   continue
               data = json.loads(m.group(1))
 
-              logging.info(data)
-
               # Recursively collect possible text strings
               def find_strings(obj, results):
                 if isinstance(obj, basestring):
@@ -173,7 +171,7 @@ class GooglePhotos(BaseService):
 
           except Exception:
               continue
-      return None
+      return 'Geen omschrijving gevonden'
 
   def getContentUrl(self, image, hints):
     url = image.url
