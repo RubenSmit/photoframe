@@ -101,9 +101,6 @@ class GooglePhotos(BaseService):
 
     return images
 
-#     image = BaseService.createImageHolder(self).setId(self.hashString(url)).setUrl(url).setSource(url).allowCache(True)
-#     return [image]
-
   def getImageUrls(self, url):
     # Fetch the page
     response = urlopen(url)
