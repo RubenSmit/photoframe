@@ -147,10 +147,10 @@ class GooglePhotos(BaseService):
         m = re.search(r'"396644657":\s*\[\s*"([^"]+)"\s*\]', html)
         if m:
             desc = m.group(1).strip()
-            logging.debug('Found Google Photos description: %s' % desc)
+            logging.info('Found Google Photos description: %s' % desc)
             return desc
 
-        logging.debug('No description found for %s' % photo_page_url)
+        logging.info('No description found for %s' % photo_page_url)
         return 'Geen omschrijving gevonden'
 
     except Exception as e:
