@@ -113,12 +113,13 @@ class GooglePhotos(BaseService):
     # Convert relative URLs to absolute and filter/replace
     img_urls = []
     for src in img_srcs:
-        full_url = urljoin(url, src)
         # Ignore URLs ending with 'p-no', those are profile images
-        if full_url.endswith('p-no'):
+        if src.endswith('p-no'):
             continue
         # Replace the last =something with =w1024-h700-no
-        full_url = re.sub(r'=[^=]*$', '=w1024-h700-no', full_url)
+        src = re.sub(r'=[^=]*$', '=w1024-h700-no', src)
+
+        full_url = urljoin(url, src)
         img_urls.append(full_url)
 
     return img_urls
