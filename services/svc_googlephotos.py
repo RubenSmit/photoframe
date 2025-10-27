@@ -89,14 +89,16 @@ class GooglePhotos(BaseService):
     if url in self.brokenUrls:
       return []
 
-    image_urls = self.getImageUrls(url)
+    image_data = self.getImageUrls(url)
     images = []
-    for img_url in image_urls:
+
+    for img_url, description in image_data:
         image = BaseService.createImageHolder(self) \
             .setId(self.hashString(img_url)) \
             .setUrl(img_url) \
             .setSource(img_url) \
-            .allowCache(True)
+            .allowCache(True) \
+            .setDescription(description)
         images.append(image)
 
     return images
@@ -107,20 +109,28 @@ class GooglePhotos(BaseService):
     html = response.read().decode('utf-8', errors='ignore')
     response.close()
 
-    # Find image sources with regex
-    img_srcs = re.findall(r'<img[^>]+src=["\']?([^"\'>]+)', html, re.IGNORECASE)
-
-    # Convert relative URLs to absolute and filter/replace
+    # Find image sources with regex, capturing src and alt/title
+    img_tags = re.findall(r'<img[^>]+>', html, re.IGNORECASE)
     img_urls = []
-    for src in img_srcs:
-        # Ignore URLs ending with 'p-no', those are profile images
-        if src.endswith('p-no'):
+
+    for tag in img_tags:
+        # Extract src
+        src_match = re.search(r'src=["\']?([^"\'>]+)', tag, re.IGNORECASE)
+        if not src_match:
+            continue
+        full_url = urljoin(url, src_match.group(1))
+        # Ignore URLs ending with 'p-no'
+        if full_url.endswith('p-no'):
             continue
         # Replace the last =something with =w1024-h700-no
-        src = re.sub(r'=[^=]*$', '=w1024-h700-no', src)
+        full_url = re.sub(r'=[^=]*$', '=w1024-h700-no', full_url)
 
-        full_url = urljoin(url, src)
-        img_urls.append(full_url)
+        # Extract alt or title (prefer alt)
+        alt_match = re.search(r'alt=["\']?([^"\'>]+)', tag, re.IGNORECASE)
+        title_match = re.search(r'title=["\']?([^"\'>]+)', tag, re.IGNORECASE)
+        text = alt_match.group(1) if alt_match else (title_match.group(1) if title_match else None)
+
+        img_urls.append((full_url, text))
 
     return img_urls
 
