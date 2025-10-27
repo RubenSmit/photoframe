@@ -63,12 +63,13 @@ class display:
     result = display.validate(tvservice_params, special)
     if result is None:
       logging.error('Unable to find a valid display mode, will default to 1280x720')
+      result = display._internaldisplay()
       # TODO: THis is less than ideal, maybe we should fetch resolution from fbset instead?
       #       but then we should also avoid touching the display since it will cause issues.
-      self.enabled = False
-      self.params = None
-      self.special = None
-      return (1280, 720, '')
+      # self.enabled = False
+      # self.params = None
+      # self.special = None
+      # return (1280, 720, '')
 
     self.width = result['width']
     self.height = result['height']
@@ -316,42 +317,17 @@ class display:
   def _internaldisplay():
     entry = {
       'mode' : 'INTERNAL',
-      'code' : None,
-      'width' : 0,
-      'height' : 0,
+      'code' : 0,
+      'width' : 1024,    # <-- set your screen width here
+      'height' : 600,   # <-- set your screen height here
       'rate' : 60,
       'aspect_ratio' : '',
       'scan' : '(internal)',
       '3d_modes' : [],
-      'reverse' : False
+      'reverse' : False,
+      'depth' : 16      # <-- RGB565
     }
-    device = '/dev/fb1'
-    if not os.path.exists(device):
-      if display._isDPI():
-        device = '/dev/fb0'
-      else:
-        device = None
-    if device:
-      info = debug.subprocess_check_output(['/bin/fbset', '-fb', device], stderr=subprocess.STDOUT).split('\n')
-      for line in info:
-        line = line.strip()
-        if line.startswith('geometry'):
-          parts = line.split(' ')
-          entry['width'] = int(parts[1])
-          entry['height'] = int(parts[2])
-          entry['depth'] = int(parts[5])
-          entry['code'] = int(device[-1])
-        # rgba 8/16,8/8,8/0,8/24 <== Detect rgba order
-        if line.startswith('rgba'):
-          m = re.search('rgba [0-9]*/([0-9]*),[0-9]*/([0-9]*),[0-9]*/([0-9]*),[0-9]*/([0-9]*)', line)
-          if m is None:
-            logging.error('fbset output has changed, cannot parse')
-            return None
-          entry['reverse'] = m.group(1) != 0
-      if entry['code'] is not None:
-        logging.debug('Internal display: ' + repr(entry))
-        return entry
-    return None
+    return entry
 
   def current(self):
     result = None
